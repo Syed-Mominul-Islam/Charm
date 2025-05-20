@@ -96,7 +96,30 @@
         }
     });
 
-
+        
+    // Highlighted Project carousel
+    $('.highlighted-carousel').owlCarousel({
+        loop: true,
+        margin: 20,
+        dots: false,
+        loop: true,
+        autoplay: true,
+        smartSpeed: 1200,
+        responsive: {
+            0:{
+                items:1
+            },
+            576:{
+                items:1
+            },
+            768:{
+                items:2
+            },
+            992:{
+                items:2
+            }
+        }
+    });
     // Vendor carousel
     $('.vendor-carousel').owlCarousel({
         loop: true,
