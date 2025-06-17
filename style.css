@@ -347,7 +347,7 @@ p{
     }
     
     .navbar-dark .navbar-nav .dropdown-menu {
-        background: rgba(101, 194, 94, 0.05);
+        background: #fff;
     }
     
     .dropdown-item {

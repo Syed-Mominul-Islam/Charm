@@ -143,11 +143,9 @@
             }
         }
     });
-    
 })(jQuery);
-
 // ================== Navebar responsive ====================
-// For mobile devices to toggle submenus
+//For mobile devices to toggle submenus
 document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function(element) {
     element.addEventListener('click', function(e) {
         if (window.innerWidth < 992) {
@@ -157,3 +155,63 @@ document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function
         }
     });
 });
+
+// =========================================Navebar start ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle dropdown clicks for mobile
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth < 992) { // Only for mobile
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const parentItem = this.parentElement;
+                const submenu = this.nextElementSibling;
+                
+                // Close other open dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    if (menu !== submenu && !menu.contains(submenu)) {
+                        menu.classList.remove('show');
+                    }
+                });
+                
+                // Toggle this dropdown
+                if (submenu) {
+                    submenu.classList.toggle('show');
+                }
+                
+                // Keep parent dropdown open
+                let currentParent = parentItem.closest('.dropdown-menu');
+                while (currentParent) {
+                    currentParent.classList.add('show');
+                    currentParent = currentParent.parentElement.closest('.dropdown-menu');
+                }
+            }
+        });
+    });
+    
+    // Close dropdowns when clicking outside (for mobile)
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth < 992 && !e.target.closest('.navbar-collapse')) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+    
+    // Track active dropdown items (your existing code)
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            dropdownItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (this.classList.contains('dropdown-toggle')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+// =========================================Navebar end ==========================================
