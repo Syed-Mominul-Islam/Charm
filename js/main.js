@@ -120,6 +120,7 @@
             }
         }
     });
+
     // Vendor carousel
     $('.vendor-carousel').owlCarousel({
         loop: true,
@@ -158,31 +159,70 @@ document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function
 
 // =========================================Navebar start ==========================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle dropdown clicks for mobile
+    // Function to set active nav item based on current page
+    function setActiveNavItem() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-link:not(.dropdown-toggle)');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        
+        // Reset all active states
+        navLinks.forEach(link => link.classList.remove('active'));
+        dropdownItems.forEach(item => item.classList.remove('active'));
+        
+        // Check regular nav items
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href');
+            if (linkHref && currentPage.includes(linkHref.replace(/\.php$/, '').replace(/\.html$/, ''))) {
+                link.classList.add('active');
+                
+                // If this is inside a dropdown, also activate the dropdown toggle
+                const dropdownToggle = link.closest('.dropdown-menu')?.previousElementSibling;
+                if (dropdownToggle && dropdownToggle.classList.contains('nav-link')) {
+                    dropdownToggle.classList.add('active');
+                }
+            }
+        });
+        
+        // Check dropdown items
+        dropdownItems.forEach(item => {
+            const itemHref = item.getAttribute('href');
+            if (itemHref && currentPage.includes(itemHref.replace(/\.php$/, '').replace(/\.html$/, ''))) {
+                item.classList.add('active');
+                
+                // Activate parent dropdown toggle
+                const dropdownToggle = item.closest('.dropdown-menu')?.previousElementSibling;
+                if (dropdownToggle && dropdownToggle.classList.contains('nav-link')) {
+                    dropdownToggle.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Set active item on page load
+    setActiveNavItem();
+    
+    // Your existing dropdown mobile handling code
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
-            if (window.innerWidth < 992) { // Only for mobile
+            if (window.innerWidth < 992) {
                 e.preventDefault();
                 e.stopPropagation();
                 
                 const parentItem = this.parentElement;
                 const submenu = this.nextElementSibling;
                 
-                // Close other open dropdowns
                 document.querySelectorAll('.dropdown-menu').forEach(menu => {
                     if (menu !== submenu && !menu.contains(submenu)) {
                         menu.classList.remove('show');
                     }
                 });
                 
-                // Toggle this dropdown
                 if (submenu) {
                     submenu.classList.toggle('show');
                 }
                 
-                // Keep parent dropdown open
                 let currentParent = parentItem.closest('.dropdown-menu');
                 while (currentParent) {
                     currentParent.classList.add('show');
@@ -192,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Close dropdowns when clicking outside (for mobile)
     document.addEventListener('click', function(e) {
         if (window.innerWidth < 992 && !e.target.closest('.navbar-collapse')) {
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -200,18 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
-    // Track active dropdown items (your existing code)
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            dropdownItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            
-            if (this.classList.contains('dropdown-toggle')) {
-                e.preventDefault();
-            }
-        });
-    });
 });
 // =========================================Navebar end ==========================================
+
